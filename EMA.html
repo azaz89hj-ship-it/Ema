@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>منصة EMA الذكية</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
+<style>
+/* Layout: one working sheet per screen; a calm green-tinted ledger ground, pine ink, leaf accent, amber for waste, brick for defects */
+:root{
+  --bg:#f3f6f2; --surface:#ffffff; --surface-2:#e9efe8; --line:#d5ded4;
+  --ink:#14241c; --ink-2:#4a5d52; --ink-3:#74867b;
+  --pine:#0f5132; --leaf:#1f8a5b; --leaf-soft:#d9efe2;
+  --amber:#b7791f; --amber-soft:#f8ecd5;
+  --brick:#b9412e; --brick-soft:#f6dfd9;
+  --sky:#2c6e8f; --sky-soft:#dcebf2;
+  --shadow:0 1px 2px rgba(20,36,28,.06),0 6px 20px rgba(20,36,28,.06);
+  --f-display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --f-body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1612; --surface:#15201a; --surface-2:#1b2a22; --line:#2a3b31;
+  --ink:#e6efe9; --ink-2:#aebfb4; --ink-3:#7f9387;
+  --pine:#7fd1a6; --leaf:#3fb37b; --leaf-soft:#173a29;
+  --amber:#e0a84a; --amber-soft:#3a2d14;
+  --brick:#ec7f69; --brick-soft:#3d1f19;
+  --sky:#7cbfe0; --sky-soft:#16303c;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1612; --surface:#15201a; --surface-2:#1b2a22; --line:#2a3b31;
+  --ink:#e6efe9; --ink-2:#aebfb4; --ink-3:#7f9387;
+  --pine:#7fd1a6; --leaf:#3fb37b; --leaf-soft:#173a29;
+  --amber:#e0a84a; --amber-soft:#3a2d14;
+  --brick:#ec7f69; --brick-soft:#3d1f19;
+  --sky:#7cbfe0; --sky-soft:#16303c;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{direction:rtl}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.7;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.35;margin:0;text-wrap:balance;color:var(--ink)}
+p{margin:0}
+button{font-family:inherit;font-size:inherit}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum";direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* header */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;background:none;border:0;color:inherit;padding:0}
+.brand svg{width:46px;height:46px;flex:none}
+.brand-txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.brand-txt b{font-family:"Readex Pro",sans-serif;font-size:22px;letter-spacing:.06em;color:var(--pine);direction:ltr}
+.brand-txt small{font-size:12.5px;color:var(--ink-3)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:10px 18px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);cursor:pointer;font-weight:600;transition:background .15s,border-color .15s,transform .1s}
+.btn:hover{border-color:var(--leaf)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible,input:focus-visible,.opt:focus-visible,.path:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+.btn.primary{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.btn.primary:hover{background:var(--pine);border-color:var(--pine)}
+:root[data-theme="dark"] .btn.primary:hover{color:#0e1612}
+.btn.big{padding:14px 26px;font-size:17px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent}
+
+/* home */
+.hero{display:grid;grid-template-columns:1fr;justify-items:center;text-align:center;gap:14px;padding-block:44px 26px}
+.hero .logo-xl{width:132px;height:132px}
+.hero h1{font-size:clamp(28px,4.4vw,42px)}
+.hero h1 span{color:var(--leaf)}
+.hero p{max-width:640px;color:var(--ink-2);font-size:18px}
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding-block:10px 34px}
+.path{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);transition:border-color .2s,transform .2s}
+.path:hover{border-color:var(--leaf);transform:translateY(-2px)}
+.path .ic{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:var(--leaf-soft);color:var(--pine)}
+.path.emp .ic{background:var(--sky-soft);color:var(--sky)}
+.path h2{font-size:22px}
+.path p{color:var(--ink-2)}
+.path ul{margin:0;padding:0 18px 0 0;color:var(--ink-2);font-size:14.5px}
+.path .go{margin-top:auto;font-weight:700;color:var(--leaf)}
+.path.emp .go{color:var(--sky)}
+.research{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:28px}
+.research h3{font-size:17px;margin-bottom:4px}
+.research .sub{color:var(--ink-3);font-size:14px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat{border-radius:12px;background:var(--surface-2);padding:14px}
+.stat b{font-family:var(--f-display);font-size:26px;display:block;color:var(--ink)}
+.stat span{font-size:13.5px;color:var(--ink-2)}
+.stat.low{background:var(--amber-soft)}
+.stat.low b{color:var(--amber)}
+.foot{color:var(--ink-3);font-size:13px;text-align:center;padding-block:10px 30px}
+
+/* stepper */
+.track-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-block:22px 10px}
+.track-head h2{font-size:24px}
+.track-head .tag{font-size:13px;color:var(--ink-3)}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;padding-block:6px 18px}
+.stepper .s{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink-3);font-size:14px;font-weight:600}
+.stepper .s i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-size:13px}
+.stepper .s.on{border-color:var(--leaf);color:var(--ink)}
+.stepper .s.on i{background:var(--leaf);color:#fff}
+.stepper .s.done i{background:var(--leaf-soft);color:var(--pine)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+.panel h3{font-size:17px;margin-bottom:4px}
+.panel .hint{color:var(--ink-3);font-size:14px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:18px;align-items:start}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;padding-block:18px 36px}
+
+/* table */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{font-weight:600;color:var(--ink-3);font-size:13px;text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n,th.n{text-align:left;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tfoot td{font-weight:700;border-top:2px solid var(--line)}
+.delta-up{color:var(--brick);font-size:12.5px}
+.delta-dn{color:var(--leaf);font-size:12.5px}
+.delta-0{color:var(--ink-3);font-size:12.5px}
+
+/* chips */
+.chip{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.c-op{background:var(--surface-2);color:var(--ink-2)}
+.c-hid{background:var(--brick-soft);color:var(--brick)}
+.c-res{background:var(--amber-soft);color:var(--amber)}
+.c-prev{background:var(--leaf-soft);color:var(--pine)}
+.c-ok{background:var(--surface-2);color:var(--ink-3)}
+.c-waste{background:var(--amber-soft);color:var(--amber)}
+.c-defect{background:var(--brick-soft);color:var(--brick)}
+.c-gap{background:var(--sky-soft);color:var(--sky)}
+
+/* dashboard */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--surface-2);border-radius:10px;padding:12px 14px}
+.kpi small{color:var(--ink-3);font-size:13px;display:block}
+.kpi b{font-family:var(--f-display);font-size:22px;display:block}
+.kpi .d{font-size:13px;font-weight:600}
+.ctrl{display:grid;gap:4px;padding-block:8px;border-top:1px solid var(--line)}
+.ctrl label{display:flex;justify-content:space-between;gap:10px;font-weight:600;font-size:14.5px}
+.ctrl label span{color:var(--leaf)}
+.ctrl small{color:var(--ink-3);font-size:13px}
+input[type=range]{width:100%;accent-color:var(--leaf);height:26px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;border-top:1px solid var(--line);cursor:pointer}
+.toggle .t{display:grid}
+.toggle .t b{font-size:14.5px}
+.toggle .t small{color:var(--ink-3);font-size:13px}
+.toggle input{width:20px;height:20px;accent-color:var(--leaf);flex:none}
+.bars{display:grid;gap:7px;margin-top:6px}
+.bar{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13.5px}
+.bar .lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2)}
+.bar .tr{height:12px;background:var(--surface-2);border-radius:6px;overflow:hidden;position:relative}
+.bar .fl{height:100%;border-radius:6px;background:var(--ink-3);transition:width .35s ease}
+.bar .gh{position:absolute;inset:0 0 0 auto;height:100%;border-left:2px dashed var(--ink-3);opacity:.5}
+.bar.env .fl{background:var(--amber)}
+.bar.hid .fl{background:var(--brick)}
+.bar.inv .fl{background:var(--leaf)}
+.bar .v{font-size:12.5px;color:var(--ink-3);min-width:72px;text-align:left}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--ink-3);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:5px;vertical-align:middle}
+.risk{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:700}
+.risk.hi{background:var(--brick-soft);color:var(--brick)}
+.risk.lo{background:var(--leaf-soft);color:var(--pine)}
+.case-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:10px}
+.case-head small{color:var(--ink-3)}
+
+/* quiz */
+.quiz-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.progress{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;max-width:260px}
+.progress div{height:100%;background:var(--leaf);transition:width .3s}
+.mission{background:var(--leaf-soft);color:var(--pine);border-radius:10px;padding:12px 14px;font-weight:600;margin-bottom:16px}
+.q-kind{font-size:13px;color:var(--leaf);font-weight:700;letter-spacing:.02em}
+.q-text{font-family:var(--f-display);font-size:20px;margin:4px 0 14px}
+.opts{display:grid;gap:10px}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;background:var(--surface);display:flex;gap:12px;align-items:center;font-weight:500;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--leaf)}
+.opt .k{width:28px;height:28px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;font-weight:700;flex:none;font-size:14px}
+.opt.right{border-color:var(--leaf);background:var(--leaf-soft)}
+.opt.right .k{background:var(--leaf);color:#fff}
+.opt.wrong{border-color:var(--brick);background:var(--brick-soft)}
+.opt.wrong .k{background:var(--brick);color:#fff}
+.opt[aria-disabled="true"]{cursor:default}
+.feedback{margin-top:14px;border-radius:10px;padding:12px 14px;font-size:14.5px}
+.feedback.good{background:var(--leaf-soft);color:var(--pine)}
+.feedback.bad{background:var(--amber-soft);color:var(--ink)}
+.feedback b{display:block;margin-bottom:2px}
+
+/* career card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.card-top{background:var(--pine);color:#fff;padding:26px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center}
+:root[data-theme="dark"] .card-top{background:#123d28}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card-top{background:#123d28}}
+.card-top h2{color:#fff;font-size:clamp(22px,3.2vw,30px)}
+.card-top .en{opacity:.75;direction:ltr;font-size:14px;text-align:right}
+.card-top .eyebrow{font-size:13px;opacity:.8;letter-spacing:.03em}
+.ring{width:118px;height:118px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ring div{width:90px;height:90px;border-radius:50%;background:var(--pine);display:grid;place-items:center;text-align:center;line-height:1.1}
+:root[data-theme="dark"] .ring div{background:#123d28}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ring div{background:#123d28}}
+.ring b{font-family:var(--f-display);font-size:28px;color:#fff}
+.ring small{font-size:11.5px;color:#d9efe2}
+.card-body{padding:22px 26px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}
+.card-body h4{font-size:15px;margin-bottom:6px;color:var(--pine)}
+.card-body p,.card-body li{color:var(--ink-2);font-size:14.5px}
+.card-body ul{margin:0;padding:0 18px 0 0}
+.fit{display:grid;gap:8px}
+.fit .row{display:grid;grid-template-columns:minmax(0,1fr) 90px 34px;gap:8px;align-items:center;font-size:13.5px}
+.fit .row .tr{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.fit .row .tr div{height:100%;background:var(--leaf)}
+.fit .row.top{font-weight:700;color:var(--ink)}
+.review{display:grid;gap:6px;margin-top:6px}
+.review div{display:flex;gap:8px;font-size:13.5px;color:var(--ink-2)}
+.review .ok{color:var(--leaf);font-weight:700}
+.review .no{color:var(--brick);font-weight:700}
+
+/* employee */
+.drop{border:2px dashed var(--line);border-radius:12px;padding:26px;text-align:center;display:grid;gap:10px;justify-items:center;transition:border-color .2s,background .2s}
+.drop.over{border-color:var(--leaf);background:var(--leaf-soft)}
+.drop .ic{color:var(--sky)}
+.drop small{color:var(--ink-3)}
+.file-ok{display:flex;align-items:center;gap:10px;background:var(--leaf-soft);color:var(--pine);border-radius:10px;padding:10px 14px;font-weight:600;margin-top:14px;flex-wrap:wrap}
+.err{background:var(--brick-soft);color:var(--brick);border-radius:10px;padding:10px 14px;margin-top:14px;font-size:14.5px}
+.run-box{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-top:18px}
+.run-box p{color:var(--ink-2)}
+.ekpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.ekpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.ekpi small{color:var(--ink-3);font-size:13px}
+.ekpi b{font-family:var(--f-display);font-size:23px;display:block}
+.ekpi.warn b{color:var(--amber)}
+.ekpi.bad b{color:var(--brick)}
+.ekpi.good b{color:var(--leaf)}
+.donut-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center}
+.donut{width:150px;height:150px;border-radius:50%;position:relative}
+.donut::after{content:"";position:absolute;inset:26px;border-radius:50%;background:var(--surface)}
+.dl{display:grid;gap:8px;font-size:14px}
+.dl div{display:flex;justify-content:space-between;gap:10px}
+.dl i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-left:7px;vertical-align:middle}
+.issues{display:grid;gap:10px}
+.issue{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;border-right-width:4px}
+.issue.waste{border-right-color:var(--amber)}
+.issue.defect{border-right-color:var(--brick)}
+.issue.gap{border-right-color:var(--sky)}
+.issue b{font-size:14.5px}
+.issue p{color:var(--ink-2);font-size:13.5px}
+.plan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.plan h3{display:flex;align-items:center;gap:8px}
+.pl{display:grid;gap:10px;margin-top:10px}
+.pli{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.pli b{font-size:14.5px}
+.pli .amt{font-family:var(--f-display);font-weight:600;text-align:left}
+.pli .amt.dn{color:var(--leaf)}
+.pli .amt.up{color:var(--sky)}
+.pli p{grid-column:1/-1;color:var(--ink-3);font-size:13.5px}
+.net{margin-top:18px;background:var(--pine);color:#fff;border-radius:14px;padding:20px 22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+:root[data-theme="dark"] .net{background:#123d28}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .net{background:#123d28}}
+.net small{opacity:.8;font-size:13px;display:block}
+.net b{font-family:var(--f-display);font-size:24px}
+.export{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.note{font-size:13px;color:var(--ink-3)}
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 10px;flex-wrap:wrap}
+.sec-title h3{font-size:19px}
+.sec-title small{color:var(--ink-3)}
+.stack{display:grid;gap:18px}
+
+#print-area{display:none}
+@media print{
+  body{background:#fff;color:#000;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .app{display:none!important}
+  #print-area{display:block}
+  @page{size:A4;margin:14mm}
+}
+#print-area{font-family:var(--f-body);color:#111;direction:rtl}
+#print-area h1{font-size:22px;color:#0f5132;margin-bottom:4px}
+#print-area h2{font-size:16px;color:#0f5132;margin:16px 0 6px;border-bottom:1px solid #ccc;padding-bottom:4px}
+#print-area table{font-size:12px}
+#print-area td,#print-area th{border:1px solid #ccc;padding:5px 7px;color:#111}
+#print-area .pmeta{color:#555;font-size:12px}
+#print-area .pkp{display:flex;gap:10px;margin-top:10px}
+#print-area .pkp div{flex:1;border:1px solid #ccc;border-radius:6px;padding:8px}
+#print-area .pkp b{display:block;font-size:16px}
+
+@media (max-width:860px){
+  .grid2,.plan,.card-body{grid-template-columns:1fr}
+  .stats,.ekpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .paths{grid-template-columns:1fr}
+  .net{grid-template-columns:1fr}
+  .card-top{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .card-top .en{text-align:center}
+  .donut-row{grid-template-columns:1fr;justify-items:center}
+  .bar{grid-template-columns:minmax(0,104px) minmax(0,1fr) auto}
+  .kpi b{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#0f5132"/><stop offset="1" stop-color="#3fb37b"/>
+    </linearGradient>
+  </defs>
+  <symbol id="ema-logo" viewBox="0 0 64 64">
+    <path d="M10 56 C8 30 22 10 56 8 C58 40 40 56 10 56 Z" fill="url(#lg)"/>
+    <path d="M12 54 L50 14" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".9"/>
+    <rect x="22" y="38" width="5" height="10" rx="1.2" fill="#ffffff" opacity=".85"/>
+    <rect x="30" y="31" width="5" height="14" rx="1.2" fill="#ffffff" opacity=".85"/>
+    <rect x="38" y="23" width="5" height="16" rx="1.2" fill="#ffffff" opacity=".85"/>
+  </symbol>
+</svg>
+
+<div class="app">
+<div class="wrap">
+  <header class="topbar">
+    <button class="brand" id="brandBtn" aria-label="العودة إلى الواجهة الرئيسية">
+      <svg><use href="#ema-logo"/></svg>
+      <span class="brand-txt"><b>EMA</b><small>منصة المحاسبة الإدارية البيئية الذكية</small></span>
+    </button>
+    <button class="btn ghost" id="homeBtn" hidden>الواجهة الرئيسية</button>
+  </header>
+
+  <!-- HOME -->
+  <section data-view="home">
+    <div class="hero">
+      <svg class="logo-xl" aria-hidden="true"><use href="#ema-logo"/></svg>
+      <h1>منصة <span>EMA</span> الذكية</h1>
+      <p>اختر مسارك الآن للبدء؛ سواء كنت طالباً تبني ثقتك المهنية أو محاسباً تدقق تكاليف منشأتك.</p>
+    </div>
+    <div class="paths">
+      <button class="path" data-go="student">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
+        <h2>مسار الطالب</h2>
+        <p>جرّب دور المحاسب على حالة مصنع سعودي، واكتشف المسمى الوظيفي الأنسب لك.</p>
+        <ul><li>داشبورد تفاعلي للمحاكاة</li><li>مهمة تحقيق من 5 اختيارات</li><li>بطاقة الاستعداد المهني</li></ul>
+        <span class="go">ابدأ كطالب ←</span>
+      </button>
+      <button class="path emp" data-go="employee">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg></span>
+        <h2>مسار الموظف / المحاسب الممارس</h2>
+        <p>ارفع قائمة تكاليف منشأتك، وشغّل التدقيق الآلي، وصدّر التقرير للإدارة.</p>
+        <ul><li>رفع ملف Excel أو PDF</li><li>تصنيف وكشف الهدر والخلل</li><li>خطة معالجة وتقرير تنفيذي</li></ul>
+        <span class="go">ابدأ كمحاسب ←</span>
+      </button>
+    </div>
+    <div class="research">
+      <h3>لماذا هذه المنصة؟</h3>
+      <p class="sub">نتائج دراسة ميدانية على 100 طالب وطالبة من قسم المحاسبة، كلية الأعمال والاقتصاد، جامعة القصيم</p>
+      <div class="stats">
+        <div class="stat"><b class="num">4.11</b><span>المعرفة النظرية بالمحاسبة الإدارية البيئية (موافقة 83%)</span></div>
+        <div class="stat"><b class="num">4.17</b><span>الاستعداد المستقبلي للتطبيق (موافقة 84% دون رفض)</span></div>
+        <div class="stat low"><b class="num">3.73</b><span>الكفاءة الذاتية المدركة، أدنى متوسط في الدراسة</span></div>
+        <div class="stat low"><b class="num">27%</b><span>من الطلبة على الحياد تجاه قدرتهم على التطبيق العملي</span></div>
+      </div>
+    </div>
+    <p class="foot">تدعم مستهدفات رؤية المملكة 2030 ومبادرة السعودية الخضراء</p>
+  </section>
+
+  <!-- STUDENT -->
+  <section data-view="student" hidden>
+    <div class="track-head">
+      <h2>مسار الطالب</h2>
+      <span class="tag">حالة تدريبية: مصنع الواحة للصناعات البلاستيكية، القصيم (بيانات افتراضية)</span>
+    </div>
+    <div class="stepper" id="sStepper"></div>
+
+    <div id="s1" class="sstep">
+      <div class="grid2">
+        <div class="panel">
+          <div class="case-head"><h3>قائمة التكاليف السنوية</h3><small>المبالغ بالريال السعودي</small></div>
+          <p class="hint">في القائمة بنود هدر وتكاليف بيئية مستترة. قارن السنة الحالية بالسابقة.</p>
+          <div class="tbl-wrap" id="caseTable"></div>
+        </div>
+        <div class="panel">
+          <h3>لوحة التحكم</h3>
+          <p class="hint">حرّك المؤشرات وجرّب القرارات، وشاهد الأثر على صافي الربح والانبعاثات.</p>
+          <div class="kpis" id="simKpis"></div>
+          <div class="ctrl"><label for="rE">خفض هدر الطاقة <span id="vE">0%</span></label><input type="range" id="rE" min="0" max="40" step="5" value="0"><small>إطفاء الأحمال الخاملة، صيانة الضواغط، إنارة موفرة</small></div>
+          <div class="ctrl"><label for="rW">خفض النفايات والفاقد <span id="vW">0%</span></label><input type="range" id="rW" min="0" max="50" step="5" value="0"><small>ضبط خطوط الإنتاج وتقليل المواد التالفة</small></div>
+          <div class="ctrl"><label for="rR">إعادة التدوير <span id="vR">0%</span></label><input type="range" id="rR" min="0" max="60" step="10" value="0"><small>تدوير بقايا البلاستيك وبيعها بدل دفع تكلفة التخلص منها</small></div>
+          <label class="toggle" for="tF"><span class="t"><b>تركيب فلاتر وصيانة وقائية</b><small>تكلفة 300,000 ريال، وتلغي غرامات الانبعاثات</small></span><input type="checkbox" id="tF"></label>
+          <label class="toggle" for="tD"><span class="t"><b>ربط العدادات الذكية بنظام ERP</b><small>تكلفة 80,000 ريال، وتكشف هدر الطاقة لحظياً (خفض 5% إضافي)</small></span><input type="checkbox" id="tD"></label>
+          <h3 style="margin-top:14px">التكاليف بعد قراراتك</h3>
+          <div class="bars" id="simBars"></div>
+          <div class="legend"><span><i style="background:var(--ink-3)"></i>تشغيلية</span><span><i style="background:var(--amber)"></i>استهلاك موارد</span><span><i style="background:var(--brick)"></i>بيئية مستترة</span><span><i style="background:var(--leaf)"></i>استثمار وقائي</span></div>
+        </div>
+      </div>
+      <div class="actions"><span></span><button class="btn primary big" id="toQuiz">ابدأ مهمة التحقيق ←</button></div>
+    </div>
+
+    <div id="s2" class="sstep" hidden>
+      <div class="grid2">
+        <div class="panel" id="quizPanel"></div>
+        <div class="panel">
+          <div class="case-head"><h3>القائمة اللي قدامك</h3><small>المبالغ بالريال</small></div>
+          <div class="tbl-wrap" id="caseTable2"></div>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="backDash">→ الرجوع للداشبورد</button><span></span></div>
+    </div>
+
+    <div id="s3" class="sstep" hidden>
+      <div id="careerCard"></div>
+      <div class="actions">
+        <button class="btn" id="restartS">إعادة التجربة</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="printCard">حفظ البطاقة PDF</button><button class="btn primary" id="goEmp">جرّب مسار المحاسب ←</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMPLOYEE -->
+  <section data-view="employee" hidden>
+    <div class="track-head">
+      <h2>مسار الموظف / المحاسب الممارس</h2>
+      <span class="tag">التحليل يتم داخل المتصفح، ولا يُرسل الملف إلى أي خادم</span>
+    </div>
+    <div class="stepper" id="eStepper"></div>
+
+    <div id="e1" class="estep">
+      <div class="grid2">
+        <div class="panel">
+          <h3>1. رفع ملف قائمة تكاليف الشركة</h3>
+          <p class="hint">Excel (xlsx / xls / csv) أو PDF فقط. يكفي عمود لاسم البند وعمود للمبلغ، ويُفضّل عمود لتكلفة السنة السابقة.</p>
+          <label class="drop" id="drop" for="fileIn">
+            <svg class="ic" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></svg>
+            <b>اسحب الملف هنا أو اضغط للاختيار</b>
+            <small>.xlsx · .xls · .csv · .pdf</small>
+          </label>
+          <input type="file" id="fileIn" accept=".xlsx,.xls,.csv,.pdf" hidden>
+        </div>
+        <div class="panel">
+          <h3>2. ملف مثال جاهز</h3>
+          <p class="hint">قائمة تكاليف مصنع النخبة لمواد البناء في بريدة (بيانات افتراضية) لتجربة الأداة فوراً.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <button class="btn primary" id="loadSample">تحميل المثال في المنصة</button>
+            <button class="btn" id="dlSample">تنزيل المثال بصيغة Excel</button>
+          </div>
+          <p class="note" style="margin-top:10px">نزّل ملف المثال وعدّل أرقامه، ثم ارفعه من الخانة الأولى لترى كيف تتعامل الأداة مع ملفك.</p>
+        </div>
+      </div>
+      <div id="fileStatus"></div>
+      <div id="previewBox"></div>
+      <div class="run-box">
+        <p>بعد إرفاق الملف أو اختيار المثال، شغّل التحليل الكامل بضغطة واحدة.</p>
+        <button class="btn primary big" id="runBtn" disabled>تشغيل الأتمتة الشاملة</button>
+      </div>
+      <div style="height:36px"></div>
+    </div>
+
+    <div id="e2" class="estep" hidden></div>
+    <div id="e3" class="estep" hidden></div>
+  </section>
+</div>
+</div>
+
+<div id="print-area"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const N=n=>`<span class="num">${fmt(n)}</span>`;
+const M=n=>`<span class="num">${(n/1e6).toFixed(2)}</span> مليون`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inFrame=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+
+/* ---------- views ---------- */
+function show(v){
+  $$('[data-view]').forEach(s=>s.hidden=s.dataset.view!==v);
+  $('#homeBtn').hidden=v==='home';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#brandBtn').onclick=()=>show('home');
+$('#homeBtn').onclick=()=>show('home');
+$$('[data-go]').forEach(b=>b.onclick=()=>{show(b.dataset.go); if(b.dataset.go==='student') sGo(1); else eGo(1);});
+
+function stepper(el,labels,cur){
+  el.innerHTML=labels.map((l,i)=>`<div class="s ${i+1===cur?'on':''} ${i+1<cur?'done':''}"><i>${i+1<cur?'✓':i+1}</i>${l}</div>`).join('');
+}
+
+/* =====================================================
+   STUDENT PATH
+   ===================================================== */
+const REVENUE=15500000;
+const CASE=[
+  {n:'المواد الخام الأساسية',a:4200000,p:3950000,t:'op'},
+  {n:'رواتب عمال الإنتاج',a:2100000,p:2000000,t:'op'},
+  {n:'رواتب الإدارة',a:1800000,p:1750000,t:'op'},
+  {n:'استهلاك الكهرباء والطاقة',a:1250000,p:980000,t:'res',k:'energy'},
+  {n:'تكلفة التخلص من النفايات',a:640000,p:290000,t:'hid',k:'disposal'},
+  {n:'إيجار المستودع',a:600000,p:600000,t:'op'},
+  {n:'فاقد المواد الخام التالفة',a:520000,p:410000,t:'hid',k:'loss'},
+  {n:'الإعلانات والتسويق',a:450000,p:430000,t:'op'},
+  {n:'غرامات الانبعاثات البيئية',a:380000,p:120000,t:'hid',k:'fines'},
+  {n:'استهلاك المياه',a:310000,p:270000,t:'res'},
+  {n:'تأمين السيارات',a:150000,p:145000,t:'op'},
+  {n:'مصاريف الضيافة',a:90000,p:85000,t:'op'},
+  {n:'الصيانة الوقائية والفلاتر',a:0,p:60000,t:'inv'}
+];
+const CASE_TOTAL=CASE.reduce((s,r)=>s+r.a,0);
+const BASE_PROFIT=REVENUE-CASE_TOTAL;
+
+function caseTableHTML(){
+  const rows=CASE.map(r=>{
+    const d=r.p?((r.a-r.p)/r.p*100):0;
+    const cls=d>3?'delta-up':d<-3?'delta-dn':'delta-0';
+    const ds=r.p? `${d>0?'+':''}${Math.round(d)}%`:'';
+    return `<tr><td>${r.n}</td><td class="n">${N(r.a)}</td><td class="n" style="color:var(--ink-3)">${N(r.p)}</td><td class="n ${cls}"><span class="num">${ds}</span></td></tr>`;
+  }).join('');
+  return `<table><thead><tr><th>البند</th><th class="n">هذه السنة</th><th class="n">السنة السابقة</th><th class="n">التغير</th></tr></thead><tbody>${rows}</tbody>
+  <tfoot><tr><td>إجمالي التكاليف</td><td class="n">${N(CASE_TOTAL)}</td><td class="n">${N(CASE.reduce((s,r)=>s+r.p,0))}</td><td></td></tr>
+  <tr><td>الإيرادات</td><td class="n">${N(REVENUE)}</td><td></td><td></td></tr>
+  <tr><td>صافي الربح</td><td class="n">${N(BASE_PROFIT)}</td><td></td><td></td></tr></tfoot></table>`;
+}
+$('#caseTable').innerHTML=caseTableHTML();
+$('#caseTable2').innerHTML=caseTableHTML();
+
+const S={step:1,sim:{e:0,w:0,r:0,f:false,d:false},changes:0,touched:{},answers:[null,null,null,null,null],qi:0};
+
+function simulate(s){
+  const e=s.e/100,w=s.w/100,r=s.r/100;
+  const v={};
+  v.energy=1250000*(1-e-(s.d?0.05:0));
+  v.disposal=640000*(1-w)*(1-r*0.5);
+  v.loss=520000*(1-w*0.6);
+  v.fines=s.f?0:380000;
+  v.filters=s.f?300000:0;
+  v.erp=s.d?80000:0;
+  v.recCost=r>0?60000+r*100000:0;
+  v.recRev=r*300000;
+  const others=CASE.filter(x=>!x.k&&x.t!=='inv').reduce((a,x)=>a+x.a,0);
+  v.total=others+v.energy+v.disposal+v.loss+v.fines+v.filters+v.erp+v.recCost;
+  v.profit=REVENUE-v.total+v.recRev;
+  v.emis=2400*(v.energy/1250000)+1100*(v.disposal/640000)+700*(s.f?0.4:1);
+  return v;
+}
+const BASE=simulate({e:0,w:0,r:0,f:false,d:false});
+
+function renderSim(){
+  const s=S.sim,v=simulate(s);
+  $('#vE').textContent=s.e+'%'; $('#vW').textContent=s.w+'%'; $('#vR').textContent=s.r+'%';
+  const dp=v.profit-BASE.profit, de=v.emis-BASE.emis;
+  const margin=v.profit/REVENUE*100;
+  $('#simKpis').innerHTML=`
+    <div class="kpi"><small>صافي الربح (ريال)</small><b>${N(v.profit)}</b><span class="d" style="color:${dp>=0?'var(--leaf)':'var(--brick)'}"><span class="num">${dp>=0?'+':''}${fmt(dp)}</span></span></div>
+    <div class="kpi"><small>الانبعاثات (طن CO₂ مكافئ)</small><b>${N(v.emis)}</b><span class="d" style="color:${de<=0?'var(--leaf)':'var(--brick)'}"><span class="num">${de>0?'+':''}${fmt(de)}</span></span></div>
+    <div class="kpi"><small>هامش الربح</small><b><span class="num">${margin.toFixed(1)}%</span></b><span class="d" style="color:var(--ink-3)">قبل: <span class="num">${(BASE.profit/REVENUE*100).toFixed(1)}%</span></span></div>
+    <div class="kpi"><small>خطر الغرامات وإيقاف المصنع</small><b style="font-size:17px;padding-block:4px">${s.f?'<span class="risk lo">منخفض</span>':'<span class="risk hi">مرتفع</span>'}</b><span class="d" style="color:var(--ink-3)">${s.f?'الفلاتر تمنع المخالفات':'لا توجد صيانة وقائية'}</span></div>`;
+  const items=[
+    {n:'الكهرباء والطاقة',a:v.energy,b:1250000,c:'env'},
+    {n:'التخلص من النفايات',a:v.disposal,b:640000,c:'hid'},
+    {n:'فاقد المواد التالفة',a:v.loss,b:520000,c:'hid'},
+    {n:'غرامات الانبعاثات',a:v.fines,b:380000,c:'hid'},
+    {n:'الفلاتر والصيانة',a:v.filters,b:0,c:'inv'},
+    {n:'برنامج إعادة التدوير',a:v.recCost,b:0,c:'inv'},
+    {n:'العدادات الذكية وERP',a:v.erp,b:0,c:'inv'},
+  ];
+  const max=1250000;
+  $('#simBars').innerHTML=items.map(i=>`<div class="bar ${i.c}"><span class="lb">${i.n}</span><span class="tr">${i.b?`<span class="gh" style="width:${i.b/max*100}%"></span>`:''}<span class="fl" style="width:${i.a/max*100}%;display:block"></span></span><span class="v">${N(i.a)}</span></div>`).join('')
+   + (v.recRev?`<p class="note" style="margin-top:6px">إيراد بيع المواد المعاد تدويرها: ${N(v.recRev)} ريال</p>`:'')
+   + `<p class="note">الخط المتقطع = قيمة البند قبل قراراتك</p>`;
+}
+const sliders={rE:'e',rW:'w',rR:'r'};
+Object.entries(sliders).forEach(([id,k])=>{
+  $('#'+id).addEventListener('input',ev=>{S.sim[k]=+ev.target.value;S.touched[k]=true;renderSim();});
+  $('#'+id).addEventListener('change',()=>S.changes++);
+});
+$('#tF').addEventListener('change',ev=>{S.sim.f=ev.target.checked;S.touched.f=true;S.changes++;renderSim();});
+$('#tD').addEventListener('change',ev=>{S.sim.d=ev.target.checked;S.touched.d=true;S.changes++;renderSim();});
+
+function sGo(n){
+  S.step=n;
+  stepper($('#sStepper'),['الداشبورد وبيانات الحالة','مهمة التحقيق','بطاقة البوزشن الوظيفي'],n);
+  $$('.sstep').forEach((el,i)=>el.hidden=i+1!==n);
+  if(n===1) renderSim();
+  if(n===2) renderQ();
+  if(n===3) renderCard();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#toQuiz').onclick=()=>sGo(2);
+$('#backDash').onclick=()=>sGo(1);
+
+/* quiz */
+const QUIZ=[
+  {kind:'اكتشاف الزيادة والهدر',q:'من خلال القائمة اللي قدامك، وين أكثر بند فيه زيادة وهدر غير طبيعي؟',
+   o:['المواد الخام الأساسية','تكلفة التخلص من النفايات','رواتب الإدارة'],c:1,
+   ex:'تكلفة التخلص من النفايات قفزت من 290,000 إلى 640,000 ريال (+121%) والإنتاج شبه ثابت. المواد الخام زادت 6% فقط، وهذا ضمن الطبيعي.',
+   w:{cost:3,audit:1}},
+  {kind:'اكتشاف الخلل والتصنيف',q:'أي من هالمصاريف تعتبر "تكلفة بيئية مستترة" مدفونة في الحسابات؟',
+   o:['إيجار المستودع','تأمين السيارات','غرامات الانبعاثات'],c:2,
+   ex:'الغرامات تُسجَّل عادة ضمن المصاريف العامة، لكن سببها بيئي. ارتفعت من 120,000 إلى 380,000 ريال، ولا تظهر كتكلفة بيئية إلا إذا فصلها المحاسب.',
+   w:{esg:2,risk:2,audit:1}},
+  {kind:'اكتشاف النقص',q:'وش البند اللي ناقص في القائمة وكان مفروض الشركة تصرف عليه عشان تتجنب المخالفات؟',
+   o:['الاستثمار في الفلاتر والصيانة الوقائية','الإعلانات والتسويق','مصاريف الضيافة'],c:0,
+   ex:'بند الصيانة الوقائية والفلاتر نزل من 60,000 ريال إلى صفر، وفي نفس السنة تضاعفت الغرامات ثلاث مرات تقريباً.',
+   w:{audit:3,risk:2}},
+  {kind:'الأثر المالي',q:'لو خفضنا هدر الطاقة والنفايات بنسبة 20% حسب الداشبورد، وش بيصير لصافي الربح؟',
+   o:['ينخفض','ما يتأثر','يرتفع بشكل ملحوظ'],c:2,
+   ex:'خفض 20% يوفّر قرابة 440,000 ريال (250,000 من الطاقة و128,000 من النفايات و62,000 من الفاقد)، فيرتفع صافي الربح من 3.01 إلى نحو 3.45 مليون ريال.',
+   w:{fin:3,mgmt:1}},
+  {kind:'القرار الإداري',q:'كمحاسب، وش توصيتك السريعة للإدارة العليا؟',
+   o:['تطبيق إعادة التدوير وتقليل الهدر','إيقاف الإنتاج','زيادة أسعار البيع'],c:0,
+   ex:'إيقاف الإنتاج يوقف الإيراد، ورفع الأسعار يضعف المنافسة. تقليل الهدر وإعادة التدوير يرفعان الربح ويخفضان الانبعاثات في نفس الوقت.',
+   w:{mgmt:3,esg:1}}
+];
+const KEYS='أبج';
+function renderQ(){
+  const i=S.qi, Q=QUIZ[i], ans=S.answers[i];
+  const done=ans!==null;
+  $('#quizPanel').innerHTML=`
+   <div class="quiz-top"><b>سؤال <span class="num">${i+1}</span> من <span class="num">5</span></b><div class="progress"><div style="width:${(i+(done?1:0))/5*100}%"></div></div></div>
+   ${i===0?`<div class="mission">أنت الحين مكان المحاسب؛ قدامك قائمة التكاليف هذي، جاوب على 5 اختيارات سريعة عشان تصيد وين الخلل ووش القرار الصح.</div>`:''}
+   <div class="q-kind">${Q.kind}</div>
+   <div class="q-text">${Q.q}</div>
+   <div class="opts">${Q.o.map((t,j)=>{
+      let cls='';
+      if(done){ if(j===Q.c) cls='right'; else if(j===ans) cls='wrong'; }
+      return `<button class="opt ${cls}" data-j="${j}" ${done?'aria-disabled="true"':''}><span class="k">${KEYS[j]}</span>${t}</button>`;}).join('')}</div>
+   ${done?`<div class="feedback ${ans===Q.c?'good':'bad'}"><b>${ans===Q.c?'صح، صدت الخلل.':'قريب، بس الجواب الأدق مختلف.'}</b>${Q.ex}</div>
+   <div class="actions" style="padding-bottom:0">${i>0?'<button class="btn" id="qPrev">→ السابق</button>':'<span></span>'}<button class="btn primary" id="qNext">${i<4?'السؤال التالي ←':'اعرض بطاقتي المهنية ←'}</button></div>`:''}`;
+  $$('#quizPanel .opt').forEach(b=>b.onclick=()=>{ if(S.answers[i]!==null) return; S.answers[i]=+b.dataset.j; renderQ(); });
+  const nx=$('#qNext'); if(nx) nx.onclick=()=>{ if(i<4){S.qi++;renderQ();} else sGo(3); };
+  const pv=$('#qPrev'); if(pv) pv.onclick=()=>{S.qi--;renderQ();};
+}
+
+/* career card */
+const ROLES={
+  cost:{ar:'محاسب تكاليف',en:'Cost Accountant',d:'يتتبع تكلفة الإنتاج، ويحسب الفاقد والهدر في المواد الخام والطاقة، ويفصل التكاليف المباشرة عن غير المباشرة.',sec:'المصانع، البتروكيماويات، الأغذية ومواد البناء',sk:['محاسبة التكاليف ونظام ABC','تحليل الانحرافات','حساب تكلفة الفاقد']},
+  audit:{ar:'مراجع داخلي',en:'Internal Auditor',d:'يفحص العمليات الداخلية للشركة، ويتأكد من عدم وجود خلل أو تلاعب أو هدر في الموارد، ويقيّم كفاءة الرقابة الداخلية والالتزام بالأنظمة.',sec:'الشركات المساهمة، البنوك، الجهات الحكومية',sk:['معايير المراجعة الداخلية (IIA)','تقييم الرقابة الداخلية','شهادة CIA']},
+  fin:{ar:'محلل مالي',en:'Financial Analyst',d:'يدرس أثر القرارات التشغيلية والبيئية على ربحية الشركة (صافي الربح، العائد على الاستثمار)، ويبني نماذج التوقعات المالية للإدارة العليا.',sec:'البنوك، شركات الاستثمار، الإدارات المالية في الشركات الكبرى',sk:['النمذجة المالية في Excel','تحليل العائد على الاستثمار','شهادة CFA']},
+  mgmt:{ar:'محاسب إداري',en:'Management Accountant',d:'يجهز التقارير الداخلية للإدارة، ويبني الموازنات التقديرية، ويقدم توصيات لتحسين الكفاءة التشغيلية وخفض التكاليف.',sec:'الشركات الصناعية والخدمية بمختلف أحجامها',sk:['الموازنات التقديرية','تقارير الأداء للإدارة','شهادة CMA']},
+  esg:{ar:'أخصائي حوكمة واستدامة',en:'ESG & Sustainability Specialist',d:'يتابع تقارير الاستدامة، ويقيس الانبعاثات الكربونية، ويضمن توافق الشركة مع مبادرة السعودية الخضراء ومعايير الإفصاح.',sec:'الشركات الكبرى والمدرجة، قطاع الطاقة والصناعة',sk:['قياس الانبعاثات (GHG Protocol)','معايير الإفصاح IFRS S1 وS2','تقارير الاستدامة']},
+  data:{ar:'محلل نظم معلومات محاسبية / بيانات',en:'Accounting Systems & Data Analyst / ERP Specialist',d:'يربط البيانات التشغيلية بالأنظمة المحاسبية مثل SAP وOracle، ويصمم لوحات التحكم لأتمتة التقارير.',sec:'الشركات التي تطبق أنظمة ERP، التقنية المالية',sk:['أنظمة ERP مثل SAP وOracle','Power BI ولوحات التحكم','SQL وتحليل البيانات']},
+  risk:{ar:'أخصائي إدارة مخاطر وامتثال',en:'Risk & Compliance Specialist',d:'يرصد المخاطر التشغيلية والقانونية مثل مخاطر الغرامات البيئية أو إيقاف المصنع، ويضع خططاً وقائية لتجنبها قبل وقوعها.',sec:'البنوك، شركات التأمين، الصناعة والطاقة',sk:['تقييم المخاطر التشغيلية','الأنظمة البيئية واشتراطات الامتثال','خطط المعالجة الوقائية']}
+};
+const ORDER=['cost','audit','fin','mgmt','esg','data','risk'];
+
+function scoreStudent(){
+  const sc={cost:0,audit:0,fin:0,mgmt:0,esg:0,data:0,risk:0};
+  const why={cost:[],audit:[],fin:[],mgmt:[],esg:[],data:[],risk:[]};
+  const add=(k,v,t)=>{sc[k]+=v; if(t) why[k].push(t);};
+  let correct=0;
+  QUIZ.forEach((Q,i)=>{ if(S.answers[i]===Q.c){correct++; Object.entries(Q.w).forEach(([k,v])=>add(k,v,null));} });
+  if(S.answers[0]===0) add('cost',1,null);
+  if(S.answers[0]===1){why.cost.push('صدت أكبر هدر في القائمة: تكلفة النفايات (+121%)');}
+  if(S.answers[1]===2){why.esg.push('ميّزت غرامات الانبعاثات كتكلفة بيئية مستترة');why.risk.push('انتبهت لبند غرامات الانبعاثات');why.audit.push('صنّفت الغرامات تصنيفاً صحيحاً');}
+  if(S.answers[2]===0){why.audit.push('اكتشفت البند الناقص: الصيانة الوقائية والفلاتر');why.risk.push('ربطت غياب الفلاتر بخطر المخالفات');}
+  if(S.answers[3]===2){why.fin.push('ربطت خفض الهدر بارتفاع صافي الربح');why.mgmt.push('قرأت الأثر المالي من الداشبورد');}
+  if(S.answers[4]===0){why.mgmt.push('قدمت التوصية الإدارية الصحيحة');why.esg.push('اخترت إعادة التدوير وتقليل الهدر');}
+  const s=S.sim, v=simulate(s), dp=v.profit-BASE.profit, de=v.emis-BASE.emis;
+  let ex=0;
+  if(s.e>0||s.w>0){add('cost',1,'جرّبت خفض هدر الطاقة والنفايات في الداشبورد');ex+=6;}
+  if(s.w>=20) add('cost',1,null);
+  if(s.r>=20){add('esg',2,`رفعت إعادة التدوير إلى ${s.r}%`);ex+=6;}
+  if(s.f){add('risk',2,'فعّلت الفلاتر والصيانة الوقائية لتفادي الغرامات');add('esg',1,'خفّضت انبعاثات العمليات بالفلاتر');ex+=6;}
+  if(s.d){add('data',3,'ربطت العدادات الذكية بنظام ERP');ex+=6;}
+  if(S.changes>=8){add('data',1,'تفاعلت كثيراً مع مؤشرات الداشبورد');}
+  if(dp>0&&de<0){add('mgmt',1,'وازنت بين رفع الربح وخفض الانبعاثات');add('fin',1,null);ex+=6;}
+  if(dp>600000) add('fin',1,`رفعت صافي الربح بأكثر من 600,000 ريال في المحاكاة`);
+  const readiness=Math.min(100,correct*14+Math.min(30,ex));
+  let best=ORDER[0];
+  ORDER.forEach(k=>{ if(sc[k]>sc[best]) best=k; });
+  if(sc[best]===0) best='mgmt';
+  return {sc,why,best,correct,readiness,dp,de};
+}
+
+function renderCard(){
+  const R=scoreStudent(), role=ROLES[R.best];
+  const maxSc=Math.max(1,...Object.values(R.sc));
+  const lvl=R.readiness>=85?'جاهز للتطبيق':R.readiness>=70?'جاهزية جيدة':R.readiness>=50?'في الطريق الصحيح':'بداية موفقة';
+  const reasons=R.why[R.best].length?R.why[R.best]:['تفاعلك العام مع الحالة يناسب هذا الدور'];
+  const ranked=ORDER.slice().sort((a,b)=>R.sc[b]-R.sc[a]);
+  const deg=R.readiness*3.6;
+  $('#careerCard').innerHTML=`
+  <div class="card" id="cardEl">
+    <div class="card-top">
+      <div class="ring" style="background:conic-gradient(#7fd1a6 ${deg}deg, rgba(255,255,255,.18) 0)"><div><b class="num">${R.readiness}%</b><small>${lvl}</small></div></div>
+      <div>
+        <div class="eyebrow">بطاقة الاستعداد المهني · المسمى الأنسب لك في سوق العمل السعودي</div>
+        <h2>${role.ar}</h2>
+        <div class="en">${role.en}</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="stack" style="gap:16px">
+        <div><h4>دوره في الواقع</h4><p>${role.d}</p></div>
+        <div><h4>لماذا ظهر لك هذا المسار؟</h4><ul>${reasons.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+        <div><h4>أين تجده؟</h4><p>${role.sec}</p></div>
+        <div><h4>مهارات تطورها الآن</h4><ul>${role.sk.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+      </div>
+      <div class="stack" style="gap:16px">
+        <div><h4>توافقك مع المسارات السبعة</h4>
+          <div class="fit">${ranked.map((k,i)=>`<div class="row ${i===0?'top':''}"><span>${ROLES[k].ar}</span><span class="tr"><div style="width:${R.sc[k]/maxSc*100}%"></div></span><span class="num">${R.sc[k]}</span></div>`).join('')}</div>
+        </div>
+        <div><h4>نتيجة مهمة التحقيق: <span class="num">${R.correct}</span> من <span class="num">5</span></h4>
+          <div class="review">${QUIZ.map((Q,i)=>`<div><span class="${S.answers[i]===Q.c?'ok':'no'}">${S.answers[i]===Q.c?'✓':'✗'}</span>${Q.kind}</div>`).join('')}</div>
+        </div>
+        <div><h4>أثر قراراتك في المحاكاة</h4>
+          <p>صافي الربح: <b class="num" style="color:${R.dp>=0?'var(--leaf)':'var(--brick)'}">${R.dp>=0?'+':''}${fmt(R.dp)}</b> ريال<br>الانبعاثات: <b class="num" style="color:${R.de<=0?'var(--leaf)':'var(--brick)'}">${R.de>0?'+':''}${fmt(R.de)}</b> طن CO₂</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+$('#restartS').onclick=()=>{
+  S.sim={e:0,w:0,r:0,f:false,d:false};S.changes=0;S.touched={};S.answers=[null,null,null,null,null];S.qi=0;
+  ['rE','rW','rR'].forEach(id=>$('#'+id).value=0); $('#tF').checked=false; $('#tD').checked=false;
+  sGo(1);
+};
+$('#goEmp').onclick=()=>{show('employee');eGo(1);};
+$('#printCard').onclick=()=>{
+  const c=$('#cardEl').cloneNode(true); c.removeAttribute('id');
+  doPrint(`<div style="max-width:760px;margin:0 auto">${c.outerHTML}</div>`, true);
+};
+
+/* =====================================================
+   EMPLOYEE PATH
+   ===================================================== */
+const SAMPLE_NAME='مصنع النخبة لمواد البناء، بريدة';
+const SAMPLE=[
+  ['المواد الخام (أسمنت وحصى ورمل)',8400000,8100000],
+  ['رواتب وأجور الإنتاج',3600000,3500000],
+  ['رواتب الإدارة',1900000,1850000],
+  ['الكهرباء والطاقة',2350000,1700000],
+  ['الوقود والديزل للمعدات',1100000,820000],
+  ['استهلاك المياه',420000,390000],
+  ['تكلفة التخلص من النفايات والمخلفات',780000,360000],
+  ['فاقد ومواد تالفة',640000,450000],
+  ['غرامات ومخالفات بيئية',450000,150000],
+  ['الصيانة الوقائية والفلاتر',40000,180000],
+  ['إيجار المستودعات',720000,720000],
+  ['النقل والشحن',950000,900000],
+  ['الإعلانات والتسويق',380000,360000],
+  ['تأمين المركبات والمعدات',210000,200000],
+  ['مصاريف إدارية عامة',300000,290000]
+];
+const E={step:1,rows:null,source:'',A:null};
+
+function eGo(n){
+  if(n>1&&!E.A) n=1;
+  E.step=n;
+  stepper($('#eStepper'),['تغذية البيانات','الأتمتة والداشبورد','خطة المعالجة والتقرير'],n);
+  $$('.estep').forEach((el,i)=>el.hidden=i+1!==n);
+  if(n===2) renderAnalysis();
+  if(n===3) renderPlan();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* number parsing */
+function toNum(c){
+  if(c==null) return null;
+  if(typeof c==='number') return isFinite(c)?c:null;
+  let s=String(c).trim();
+  if(!s) return null;
+  s=s.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  s=s.replace(/ريال|ر\.س|SAR|SR|\s/gi,'').replace(/[,٬]/g,'').replace('٫','.');
+  let neg=false; if(/^\(.*\)$/.test(s)){neg=true;s=s.slice(1,-1);}
+  if(!/^-?\d+(\.\d+)?$/.test(s)) return null;
+  const v=Number(s); return neg?-v:v;
+}
+const isYear=c=>{const v=toNum(c);return v!==null&&Number.isInteger(v)&&v>=1990&&v<=2100;};
+
+function parseAOA(aoa){
+  const rows=aoa.filter(r=>Array.isArray(r)&&r.some(c=>c!=null&&String(c).trim()!==''));
+  if(!rows.length) return [];
+  let hi=-1;
+  for(let i=0;i<Math.min(rows.length,8);i++){
+    const r=rows[i], filled=r.filter(c=>c!=null&&String(c).trim()!=='');
+    const hasText=filled.some(c=>toNum(c)===null);
+    const numsOk=filled.every(c=>toNum(c)===null||isYear(c));
+    if(filled.length>=2&&hasText&&numsOk){hi=i;break;}
+  }
+  const head=hi>=0?rows[hi].map(c=>c==null?'':String(c)):[];
+  const data=rows.slice(hi+1);
+  const ncol=Math.max(...data.map(r=>r.length),head.length);
+  const stat=[];
+  for(let c=0;c<ncol;c++){
+    let t=0,n=0; data.forEach(r=>{const v=r[c]; if(v==null||String(v).trim()==='')return; if(toNum(v)===null)t++; else n++;});
+    stat.push({c,t,n});
+  }
+  const nameCol=stat.slice().sort((a,b)=>b.t-a.t)[0].c;
+  let numCols=stat.filter(s=>s.c!==nameCol&&s.n>=Math.max(1,data.length*0.5)).map(s=>s.c);
+  if(!numCols.length) return [];
+  let cur=null,prev=null;
+  const yearCols=numCols.filter(c=>isYear(head[c]));
+  if(yearCols.length>=2){ yearCols.sort((a,b)=>toNum(head[b])-toNum(head[a])); cur=yearCols[0]; prev=yearCols[1]; }
+  else{
+    prev=numCols.find(c=>/سابق|ماضي|الماضية|السابقة|prev|prior|last/i.test(head[c]||''));
+    cur=numCols.find(c=>c!==prev&&/حالي|الحالية|current|المبلغ|التكلفة|القيمة|amount|cost|total/i.test(head[c]||''));
+    if(cur==null) cur=numCols.find(c=>c!==prev);
+    if(prev==null&&numCols.length>1) prev=numCols.find(c=>c!==cur);
+  }
+  const out=[];
+  data.forEach(r=>{
+    const name=r[nameCol]==null?'':String(r[nameCol]).trim();
+    if(!name||/إجمالي|الإجمالي|المجموع|مجموع|total|صافي/i.test(name)) return;
+    const a=toNum(r[cur]); if(a===null) return;
+    const p=prev!=null?toNum(r[prev]):null;
+    out.push({n:name,a:Math.abs(a),p:p===null?null:Math.abs(p)});
+  });
+  return out;
+}
+
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('load'));document.head.appendChild(s);});}
+
+async function parsePDF(buf){
+  if(!window.pdfjsLib){
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const pdf=await window.pdfjsLib.getDocument({data:buf}).promise;
+  const aoa=[];
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p), tc=await page.getTextContent();
+    const lines={};
+    tc.items.forEach(it=>{ if(!it.str||!it.str.trim()) return; const y=Math.round(it.transform[5]/3)*3; (lines[y]=lines[y]||[]).push({x:it.transform[4],s:it.str.trim()}); });
+    Object.keys(lines).map(Number).sort((a,b)=>b-a).forEach(y=>{
+      const parts=lines[y].sort((a,b)=>b.x-a.x);
+      const texts=[],nums=[];
+      parts.forEach(pt=>{
+        const v=toNum(pt.s);
+        if(v!==null) nums.push(v);
+        else{
+          const found=pt.s.match(/[\d٠-٩][\d٠-٩,٬.]*/g)||[];
+          const rest=pt.s.replace(/[\d٠-٩][\d٠-٩,٬.]*/g,'').replace(/ريال|ر\.س|SAR/g,'').trim();
+          found.forEach(f=>{const n=toNum(f); if(n!==null&&n>=100) nums.push(n);});
+          if(rest) texts.push(rest);
+        }
+      });
+      if(texts.length&&nums.length) aoa.push([texts.join(' '),...nums]);
+      else if(texts.length>=2&&!nums.length&&!aoa.length) aoa.push(texts);
+    });
+  }
+  return parseAOA(aoa);
+}
+
+async function handleFile(file){
+  const st=$('#fileStatus');
+  st.innerHTML='';
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(!['xlsx','xls','csv','pdf'].includes(ext)){ st.innerHTML=`<div class="err">الصيغة غير مدعومة. ارفع ملف Excel (xlsx أو xls أو csv) أو PDF.</div>`; return; }
+  try{
+    const buf=await file.arrayBuffer();
+    let rows;
+    if(ext==='pdf') rows=await parsePDF(buf);
+    else{
+      if(!window.XLSX) throw new Error('xlsx');
+      const wb=XLSX.read(buf,{type:'array'});
+      rows=[];
+      for(const sn of wb.SheetNames){ rows=parseAOA(XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''})); if(rows.length) break; }
+    }
+    if(!rows.length){ st.innerHTML=`<div class="err">ما قدرنا نقرأ بنود التكاليف من الملف. تأكد أن فيه عموداً لاسم البند وعموداً للمبلغ، أو نزّل ملف المثال واستخدمه كقالب.</div>`; return; }
+    setRows(rows,file.name);
+  }catch(e){
+    st.innerHTML=`<div class="err">${e.message==='xlsx'||e.message==='load'?'تعذّر تحميل مكتبة قراءة الملفات. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.':'تعذّرت قراءة الملف. جرّب حفظه من جديد بصيغة xlsx ثم ارفعه.'}</div>`;
+  }
+}
+function setRows(rows,src){
+  E.rows=rows; E.source=src; E.A=null;
+  const hasPrev=rows.some(r=>r.p!=null);
+  $('#fileStatus').innerHTML=`<div class="file-ok"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>تم تجهيز: ${esc(src)} · <span class="num">${rows.length}</span> بنداً${hasPrev?' مع مقارنة بالسنة السابقة':''}</div>`;
+  $('#previewBox').innerHTML=`<div class="panel" style="margin-top:14px"><h3>معاينة البيانات</h3><p class="hint">أول البنود كما قرأتها الأداة</p><div class="tbl-wrap"><table><thead><tr><th>البند</th><th class="n">المبلغ الحالي</th><th class="n">السنة السابقة</th></tr></thead><tbody>${
+    rows.slice(0,6).map(r=>`<tr><td>${esc(r.n)}</td><td class="n">${N(r.a)}</td><td class="n">${r.p!=null?N(r.p):'—'}</td></tr>`).join('')}${rows.length>6?`<tr><td colspan="3" class="note">و<span class="num">${rows.length-6}</span> بنود أخرى</td></tr>`:''}</tbody></table></div></div>`;
+  $('#runBtn').disabled=false;
+}
+const drop=$('#drop');
+$('#fileIn').addEventListener('change',ev=>{const f=ev.target.files[0]; if(f) handleFile(f); ev.target.value='';});
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,ev=>{ev.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,ev=>{ev.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',ev=>{const f=ev.dataTransfer.files[0]; if(f) handleFile(f);});
+$('#loadSample').onclick=()=>setRows(SAMPLE.map(r=>({n:r[0],a:r[1],p:r[2]})),SAMPLE_NAME+' (ملف المثال)');
+$('#dlSample').onclick=()=>{
+  if(!window.XLSX) return exportNote('تعذّر تحميل مكتبة Excel. تأكد من اتصال الإنترنت.');
+  const ws=XLSX.utils.aoa_to_sheet([['البند','التكلفة الحالية (ريال)','تكلفة السنة السابقة (ريال)'],...SAMPLE]);
+  ws['!cols']=[{wch:38},{wch:22},{wch:26}];
+  const wb=XLSX.utils.book_new(); wb.Workbook={Views:[{RTL:true}]};
+  XLSX.utils.book_append_sheet(wb,ws,'قائمة التكاليف');
+  XLSX.writeFile(wb,'مثال_قائمة_تكاليف_مصنع.xlsx');
+};
+
+/* analysis engine */
+const KW={
+  fine:/غرام|مخالف/,
+  hidden:/غرام|مخالف|انبعاث|نفاي|مخلف|التخلص|تلوث|فاقد|تالف|هدر|ردم|تسرب|معالجة النفايات/,
+  resource:/كهرب|طاق|وقود|ديزل|بنزين|مياه|الماء|غاز|بخار/,
+  preventive:/صيانة وقائية|الصيانة الوقائية|فلتر|فلاتر|مرشح|تدوير|عدادات ذكية|آيزو|ISO|14001/i,
+  maint:/صيانة وقائية|الصيانة الوقائية|فلتر|فلاتر|مرشح/,
+  recycle:/تدوير/,
+  energy:/كهرب|طاق/,
+  fuel:/وقود|ديزل|بنزين/,
+  disposal:/نفاي|مخلف|التخلص|ردم/,
+  loss:/فاقد|تالف|هدر/
+};
+const CAT={op:{l:'تشغيلية تقليدية',c:'c-op',col:'var(--ink-3)'},res:{l:'استهلاك موارد (بيئية)',c:'c-res',col:'var(--amber)'},hid:{l:'بيئية مستترة',c:'c-hid',col:'var(--brick)'},prev:{l:'استثمار وقائي بيئي',c:'c-prev',col:'var(--leaf)'}};
+const STAT={ok:{l:'طبيعي',c:'c-ok'},waste:{l:'هدر وزيادة',c:'c-waste'},defect:{l:'خلل',c:'c-defect'},gap:{l:'نقص',c:'c-gap'},watch:{l:'زيادة للمتابعة',c:'c-waste'}};
+
+function analyze(rows){
+  const total=rows.reduce((s,r)=>s+r.a,0);
+  const items=rows.map(r=>{
+    const n=r.n;
+    let cat='op';
+    if(KW.preventive.test(n)) cat='prev';
+    else if(KW.hidden.test(n)) cat='hid';
+    else if(KW.resource.test(n)) cat='res';
+    const g=(r.p!=null&&r.p>0)?(r.a-r.p)/r.p:null;
+    const share=total?r.a/total:0;
+    let st='ok',note='';
+    if(cat==='hid'&&KW.fine.test(n)&&r.a>0){st='defect';note='غرامات بيئية تعني وجود مخالفات قائمة وضعف في الرقابة الوقائية'+(g!=null&&g>0?`، وارتفعت ${Math.round(g*100)}% عن السنة السابقة`:'');}
+    else if(cat==='hid'||cat==='res'){
+      if(g!=null&&g>=0.15){st='waste';note=`ارتفاع ${Math.round(g*100)}% عن السنة السابقة دون ما يبرره في بقية البنود`;}
+      else if(g==null&&((cat==='res'&&share>0.08)||(cat==='hid'&&share>0.03))){st='waste';note=`يمثل ${(share*100).toFixed(1)}% من إجمالي التكاليف، وهي نسبة أعلى من المعتاد لهذا النوع`;}
+      else note=g!=null?`تغيّر ${Math.round(g*100)}% وهو ضمن الحدود المقبولة`:'ضمن الحدود المقبولة';
+    }
+    else if(cat==='prev'){
+      if(r.a===0||(r.p!=null&&r.p>0&&r.a<r.p*0.5)){st='gap';note=r.p?`انخفض من ${fmt(r.p)} إلى ${fmt(r.a)} ريال، وتقليص الوقاية يرفع خطر المخالفات`:'لا يوجد مخصص فعلي لهذا البند';}
+      else note='استثمار وقائي يحمي من الغرامات';
+    }
+    else{
+      if(g!=null&&g>=0.25){st='watch';note=`ارتفاع ${Math.round(g*100)}% يحتاج تفسيراً`;}
+      else note=g!=null?`تغيّر ${g>=0?'+':''}${Math.round(g*100)}%`:'';
+    }
+    return {...r,cat,g,share,st,note};
+  });
+  const sum=f=>items.filter(f).reduce((s,r)=>s+r.a,0);
+  const byCat={op:sum(r=>r.cat==='op'),res:sum(r=>r.cat==='res'),hid:sum(r=>r.cat==='hid'),prev:sum(r=>r.cat==='prev')};
+  const fines=sum(r=>KW.fine.test(r.n));
+  const gaps=[];
+  const maintItem=items.find(r=>KW.maint.test(r.n));
+  if(!maintItem||maintItem.a===0) gaps.push({t:'غياب مخصص الصيانة الوقائية والفلاتر',d:'لا يوجد بند فعلي للصيانة الوقائية أو الفلاتر في القائمة، وهذا أكثر ما يقود إلى الغرامات وإيقاف خطوط الإنتاج.'});
+  if(!items.some(r=>KW.recycle.test(r.n))) gaps.push({t:'لا يوجد برنامج لإعادة التدوير',d:'تكاليف التخلص من النفايات تُدفع بالكامل دون أي استرداد من بيع المخلفات القابلة للتدوير.'});
+  if(fines>0) gaps.push({t:'وجود غرامات بيئية',d:`الغرامات (${fmt(fines)} ريال) تكلفة يمكن تجنبها كلياً بالاستثمار الوقائي.`});
+  if(!items.some(r=>r.p!=null)) gaps.push({t:'لا توجد أرقام للسنة السابقة',d:'أضف عموداً لتكلفة السنة السابقة لتحصل على كشف أدق للزيادات غير الطبيعية.'});
+
+  /* plan */
+  const reduce=[],increase=[];
+  items.forEach(r=>{
+    if(r.st==='defect'){reduce.push({n:r.n,a:r.a,pct:1,why:'تُلغى بالكامل بعد تطبيق الصيانة الوقائية والفلاتر والالتزام بحدود الانبعاثات'});return;}
+    if(r.st==='waste'){
+      let pct=0.2,why='ترشيد الاستهلاك ومعالجة مصادر الهدر';
+      if(KW.energy.test(r.n)){pct=0.2;why='إطفاء الأحمال الخاملة، صيانة المحركات والضواغط، إنارة موفرة، ومراقبة لحظية بالعدادات الذكية';}
+      else if(KW.fuel.test(r.n)){pct=0.2;why='جدولة تشغيل المعدات ومنع التشغيل في وضع الخمول وصيانة المحركات';}
+      else if(KW.disposal.test(r.n)){pct=0.35;why='فرز المخلفات وتحويل الجزء القابل للتدوير إلى مورد بدل دفع تكلفة التخلص منه';}
+      else if(KW.loss.test(r.n)){pct=0.4;why='ضبط جودة خطوط الإنتاج وتحسين التخزين لتقليل المواد التالفة';}
+      else if(r.cat==='res'){pct=0.15;why='ترشيد الاستهلاك وكشف التسربات';}
+      if(r.g!=null&&r.g>0){const back=(r.a-r.p)/r.a; pct=Math.min(pct,Math.max(0.1,back));}
+      reduce.push({n:r.n,a:r.a,pct,why});
+    }
+    if(r.st==='watch') reduce.push({n:r.n,a:r.a,pct:0.1,why:'مراجعة أسباب الارتفاع وإعادته إلى مستواه السابق'});
+  });
+  reduce.forEach(x=>x.save=x.a*x.pct);
+  const maintCur=maintItem?maintItem.a:0;
+  const maintTarget=Math.max(maintItem&&maintItem.p?maintItem.p:0,fines*0.8,total*0.01);
+  if(maintTarget>maintCur) increase.push({n:'الصيانة الوقائية والفلاتر',a:maintCur,add:maintTarget-maintCur,why:'لمنع الغرامات وتقليل الأعطال والانبعاثات. تكلفتها أقل من الغرامات التي تمنعها'});
+  const disp=items.filter(r=>KW.disposal.test(r.n)).reduce((s,r)=>s+r.a,0);
+  if(!items.some(r=>KW.recycle.test(r.n))&&disp>0) increase.push({n:'برنامج إعادة التدوير وفرز المخلفات',a:0,add:Math.round(disp*0.25),why:'حاويات فرز واتفاقية مع شركة تدوير، ويعود جزء من التكلفة كإيراد من بيع المواد'});
+  const en=items.filter(r=>KW.energy.test(r.n)&&r.st==='waste').reduce((s,r)=>s+r.a,0);
+  if(en>0) increase.push({n:'عدادات ذكية للطاقة مربوطة بنظام ERP',a:0,add:Math.round(en*0.04),why:'لكشف هدر الطاقة لحظياً حسب خط الإنتاج، وضمان استمرار الوفر'});
+  const saveTot=reduce.reduce((s,x)=>s+x.save,0), addTot=increase.reduce((s,x)=>s+x.add,0);
+  const wasteAmt=items.filter(r=>r.st==='waste'||r.st==='watch').reduce((s,r)=>s+(r.p!=null&&r.a>r.p?r.a-r.p:r.a*0.2),0);
+  return {items,total,byCat,fines,gaps,reduce,increase,saveTot,addTot,net:saveTot-addTot,wasteAmt,
+    counts:{waste:items.filter(r=>r.st==='waste'||r.st==='watch').length,defect:items.filter(r=>r.st==='defect').length,gap:items.filter(r=>r.st==='gap').length+gaps.length}};
+}
+
+$('#runBtn').onclick=()=>{
+  if(!E.rows) return;
+  const b=$('#runBtn'); b.disabled=true; b.textContent='جارٍ التحليل…';
+  setTimeout(()=>{E.A=analyze(E.rows); b.disabled=false; b.textContent='تشغيل الأتمتة الشاملة'; eGo(2);},650);
+};
+
+function renderAnalysis(){
+  const A=E.A, env=A.byCat.res+A.byCat.hid;
+  const tot=A.total||1;
+  let acc=0; const segs=['op','res','hid','prev'].map(k=>{const from=acc/tot*360; acc+=A.byCat[k]; return `${CAT[k].col} ${from}deg ${acc/tot*360}deg`;}).join(',');
+  const flagged=A.items.filter(r=>r.st!=='ok');
+  const maxA=Math.max(...A.items.map(r=>r.a),1);
+  const top=A.items.slice().sort((a,b)=>b.a-a.a);
+  $('#e2').innerHTML=`
+  <div class="ekpis">
+    <div class="ekpi"><small>إجمالي التكاليف</small><b>${N(A.total)}</b><small>ريال · <span class="num">${A.items.length}</span> بنداً</small></div>
+    <div class="ekpi bad"><small>تكاليف بيئية مستترة</small><b>${N(A.byCat.hid)}</b><small><span class="num">${(A.byCat.hid/tot*100).toFixed(1)}%</span> من الإجمالي</small></div>
+    <div class="ekpi warn"><small>نقاط هدر وزيادة</small><b class="num">${A.counts.waste}</b><small>بقيمة زيادة تقارب ${N(A.wasteAmt)} ريال</small></div>
+    <div class="ekpi"><small>نقاط خلل ونقص</small><b class="num" style="color:var(--sky)">${A.counts.defect+A.counts.gap}</b><small>غرامات، بنود ناقصة أو مُقلَّصة</small></div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>تصنيف التكاليف تلقائياً</h3>
+      <p class="hint">تكاليف تشغيلية تقليدية مقابل التكاليف البيئية بأنواعها</p>
+      <div class="donut-row">
+        <div class="donut" style="background:conic-gradient(${segs})"></div>
+        <div class="dl">${['op','res','hid','prev'].map(k=>`<div><span><i style="background:${CAT[k].col}"></i>${CAT[k].l}</span><span>${N(A.byCat[k])} · <span class="num">${(A.byCat[k]/tot*100).toFixed(1)}%</span></span></div>`).join('')}
+          <div style="border-top:1px solid var(--line);padding-top:8px"><b>مجموع البيئي</b><b>${N(env+A.byCat.prev)}</b></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>البنود حسب الحجم</h3>
+      <p class="hint">الألوان حسب التصنيف، والعلامة تشير لحالة البند</p>
+      <div class="bars">${top.slice(0,9).map(r=>`<div class="bar ${r.cat==='res'?'env':r.cat==='hid'?'hid':r.cat==='prev'?'inv':''}"><span class="lb" title="${esc(r.n)}">${r.st!=='ok'?'● ':''}${esc(r.n)}</span><span class="tr"><span class="fl" style="width:${r.a/maxA*100}%;display:block"></span></span><span class="v">${N(r.a)}</span></div>`).join('')}</div>
+    </div>
+  </div>
+
+  <div class="sec-title"><h3>نقاط الهدر والخلل والنقص</h3><small>${flagged.length+A.gaps.length} ملاحظة</small></div>
+  <div class="grid2">
+    <div class="issues">${flagged.filter(r=>r.st==='waste'||r.st==='watch').map(r=>`<div class="issue waste"><b>${esc(r.n)} · ${N(r.a)} ريال</b><p>${r.note}</p></div>`).join('')||'<p class="note">لا توجد نقاط هدر واضحة.</p>'}</div>
+    <div class="issues">${flagged.filter(r=>r.st==='defect').map(r=>`<div class="issue defect"><b>${esc(r.n)} · ${N(r.a)} ريال</b><p>${r.note}</p></div>`).join('')}
+      ${flagged.filter(r=>r.st==='gap').map(r=>`<div class="issue gap"><b>${esc(r.n)}</b><p>${r.note}</p></div>`).join('')}
+      ${A.gaps.filter(g=>!/غرامات/.test(g.t)||!flagged.some(r=>r.st==='defect')).map(g=>`<div class="issue gap"><b>${g.t}</b><p>${g.d}</p></div>`).join('')}</div>
+  </div>
+
+  <div class="sec-title"><h3>تفاصيل كل بند</h3><small>المصدر: ${esc(E.source)}</small></div>
+  <div class="panel tbl-wrap"><table>
+    <thead><tr><th>البند</th><th class="n">المبلغ</th><th class="n">السنة السابقة</th><th class="n">التغير</th><th>التصنيف</th><th>الحالة</th><th>الملاحظة</th></tr></thead>
+    <tbody>${A.items.map(r=>`<tr><td>${esc(r.n)}</td><td class="n">${N(r.a)}</td><td class="n" style="color:var(--ink-3)">${r.p!=null?N(r.p):'—'}</td>
+      <td class="n ${r.g==null?'delta-0':r.g>0.03?'delta-up':r.g<-0.03?'delta-dn':'delta-0'}"><span class="num">${r.g==null?'':(r.g>0?'+':'')+Math.round(r.g*100)+'%'}</span></td>
+      <td><span class="chip ${CAT[r.cat].c}">${CAT[r.cat].l}</span></td><td><span class="chip ${STAT[r.st].c}">${STAT[r.st].l}</span></td><td style="color:var(--ink-2);font-size:13.5px;min-width:220px">${r.note}</td></tr>`).join('')}</tbody>
+  </table></div>
+  <div class="actions"><button class="btn" id="eBack1">→ تغيير الملف</button><button class="btn primary big" id="toPlan">خطة المعالجة والتقرير ←</button></div>`;
+  $('#eBack1').onclick=()=>eGo(1);
+  $('#toPlan').onclick=()=>eGo(3);
+}
+
+function renderPlan(){
+  const A=E.A;
+  $('#e3').innerHTML=`
+  <div class="plan">
+    <div class="panel">
+      <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--leaf)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>ماذا نُقلّل؟ (خفض الهدر)</h3>
+      <div class="pl">${A.reduce.map(x=>`<div class="pli"><b>${esc(x.n)}</b><span class="amt dn"><span class="num">−${fmt(x.save)}</span></span><p>خفض <span class="num">${Math.round(x.pct*100)}%</span> من ${N(x.a)} ريال. ${x.why}</p></div>`).join('')||'<p class="note">لا توجد بنود تحتاج خفضاً.</p>'}</div>
+    </div>
+    <div class="panel">
+      <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>ماذا نَزيد؟ (الاستثمار الوقائي)</h3>
+      <div class="pl">${A.increase.map(x=>`<div class="pli"><b>${x.n}</b><span class="amt up"><span class="num">+${fmt(x.add)}</span></span><p>${x.a?`من ${N(x.a)} إلى ${N(x.a+x.add)} ريال. `:''}${x.why}</p></div>`).join('')||'<p class="note">المخصصات الوقائية الحالية كافية.</p>'}</div>
+    </div>
+  </div>
+  <div class="net">
+    <div><small>الوفر المتوقع من خفض الهدر</small><b>${N(A.saveTot)}</b> <small style="display:inline">ريال</small></div>
+    <div><small>الاستثمار الوقائي المطلوب</small><b>${N(A.addTot)}</b> <small style="display:inline">ريال</small></div>
+    <div><small>صافي الأثر السنوي على الربح</small><b class="num">${A.net>=0?'+':''}${fmt(A.net)}</b> <small style="display:inline">ريال</small></div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h3>التصدير الفوري للإدارة العليا</h3>
+    <p class="hint">ملف Excel منسق بثلاث أوراق (الملخص، التصنيف، خطة المعالجة)، أو تقرير تنفيذي بصيغة PDF.</p>
+    <div class="export"><button class="btn primary" id="xlsBtn">تحميل ملف Excel</button><button class="btn primary" id="pdfBtn">تحميل التقرير PDF</button><span class="note" id="expNote"></span></div>
+  </div>
+  <div class="actions"><button class="btn" id="eBack2">→ الرجوع للداشبورد</button><button class="btn" id="eNew">تحليل ملف جديد</button></div>`;
+  $('#eBack2').onclick=()=>eGo(2);
+  $('#eNew').onclick=()=>{E.rows=null;E.A=null;$('#fileStatus').innerHTML='';$('#previewBox').innerHTML='';$('#runBtn').disabled=true;eGo(1);};
+  $('#xlsBtn').onclick=exportXLSX;
+  $('#pdfBtn').onclick=()=>{ exportNote('اختر "حفظ بصيغة PDF" من نافذة الطباعة.'); doPrint(reportHTML()); };
+}
+function exportNote(t){const n=$('#expNote'); if(n) n.textContent=t;}
+
+function exportXLSX(){
+  if(!window.XLSX) return exportNote('تعذّر تحميل مكتبة Excel. تأكد من اتصال الإنترنت.');
+  const A=E.A, wb=XLSX.utils.book_new(); wb.Workbook={Views:[{RTL:true},{RTL:true},{RTL:true}]};
+  const d=new Date().toLocaleDateString('en-GB');
+  const s1=XLSX.utils.aoa_to_sheet([
+    ['تقرير التدقيق البيئي للتكاليف · منصة EMA الذكية'],['المصدر',E.source],['تاريخ التقرير',d],[],
+    ['المؤشر','القيمة (ريال)'],
+    ['إجمالي التكاليف',Math.round(A.total)],
+    ['تكاليف تشغيلية تقليدية',Math.round(A.byCat.op)],
+    ['استهلاك موارد (بيئية)',Math.round(A.byCat.res)],
+    ['تكاليف بيئية مستترة',Math.round(A.byCat.hid)],
+    ['استثمار وقائي بيئي',Math.round(A.byCat.prev)],
+    ['الغرامات البيئية',Math.round(A.fines)],[],
+    ['الوفر المتوقع من خفض الهدر',Math.round(A.saveTot)],
+    ['الاستثمار الوقائي المطلوب',Math.round(A.addTot)],
+    ['صافي الأثر السنوي على الربح',Math.round(A.net)]]);
+  s1['!cols']=[{wch:34},{wch:44}];
+  const s2=XLSX.utils.aoa_to_sheet([['البند','المبلغ الحالي (ريال)','السنة السابقة (ريال)','نسبة التغير','التصنيف','الحالة','الملاحظة'],
+    ...A.items.map(r=>[r.n,Math.round(r.a),r.p!=null?Math.round(r.p):'',r.g!=null?Math.round(r.g*1000)/10+'%':'',CAT[r.cat].l,STAT[r.st].l,r.note])]);
+  s2['!cols']=[{wch:36},{wch:18},{wch:18},{wch:12},{wch:22},{wch:14},{wch:60}];
+  s2['!autofilter']={ref:`A1:G${A.items.length+1}`};
+  const s3=XLSX.utils.aoa_to_sheet([['الإجراء','البند','المبلغ الحالي (ريال)','النسبة','الأثر (ريال)','المبرر'],
+    ...A.reduce.map(x=>['تقليل',x.n,Math.round(x.a),Math.round(x.pct*100)+'%',-Math.round(x.save),x.why]),
+    ...A.increase.map(x=>['زيادة',x.n,Math.round(x.a),'',Math.round(x.add),x.why]),
+    [],['','','','صافي الأثر','',Math.round(A.net)]]);
+  s3['!cols']=[{wch:10},{wch:36},{wch:18},{wch:10},{wch:16},{wch:70}];
+  [s1,s2,s3].forEach(ws=>{Object.keys(ws).forEach(k=>{if(k[0]!=='!'&&typeof ws[k].v==='number'){ws[k].z='#,##0';}});});
+  XLSX.utils.book_append_sheet(wb,s1,'الملخص');
+  XLSX.utils.book_append_sheet(wb,s2,'التصنيف والتدقيق');
+  XLSX.utils.book_append_sheet(wb,s3,'خطة المعالجة');
+  try{ XLSX.writeFile(wb,'تقرير_EMA_التدقيق_البيئي.xlsx'); exportNote(inFrame?'إذا لم يبدأ التنزيل، افتح نسخة الملف المحلية من المنصة.':'تم تجهيز ملف Excel.'); }
+  catch(e){ exportNote('المتصفح منع التنزيل هنا. افتح نسخة الملف المحلية من المنصة.'); }
+}
+
+function reportHTML(){
+  const A=E.A, d=new Date().toLocaleDateString('ar-SA-u-nu-latn',{year:'numeric',month:'long',day:'numeric'});
+  const logo=`<svg width="40" height="40" style="vertical-align:middle;margin-left:8px"><use href="#ema-logo"/></svg>`;
+  return `<h1>${logo}تقرير التدقيق البيئي للتكاليف</h1>
+  <p class="pmeta">منصة EMA الذكية · المصدر: ${esc(E.source)} · ${d}</p>
+  <div class="pkp"><div>إجمالي التكاليف<b>${fmt(A.total)} ريال</b></div><div>تكاليف بيئية مستترة<b>${fmt(A.byCat.hid)} ريال</b></div><div>الوفر المتوقع<b>${fmt(A.saveTot)} ريال</b></div><div>صافي الأثر على الربح<b>${A.net>=0?'+':''}${fmt(A.net)} ريال</b></div></div>
+  <h2>الخلاصة والتوصية</h2>
+  <p>كشف التحليل ${A.counts.waste} بنود فيها هدر أو زيادة غير طبيعية، و${A.counts.defect+A.counts.gap} نقاط خلل ونقص. نوصي بخفض الهدر في البنود أدناه بوفر متوقع ${fmt(A.saveTot)} ريال، مقابل استثمار وقائي قدره ${fmt(A.addTot)} ريال، ليصبح صافي الأثر السنوي ${fmt(A.net)} ريال لصالح الربح مع خفض المخاطر البيئية.</p>
+  <h2>ماذا نُقلّل؟</h2>
+  <table><thead><tr><th>البند</th><th>المبلغ الحالي</th><th>نسبة الخفض</th><th>الوفر (ريال)</th><th>الإجراء</th></tr></thead><tbody>
+  ${A.reduce.map(x=>`<tr><td>${esc(x.n)}</td><td>${fmt(x.a)}</td><td>${Math.round(x.pct*100)}%</td><td>${fmt(x.save)}</td><td>${x.why}</td></tr>`).join('')}</tbody></table>
+  <h2>ماذا نَزيد؟</h2>
+  <table><thead><tr><th>البند</th><th>الحالي</th><th>الزيادة (ريال)</th><th>المبرر</th></tr></thead><tbody>
+  ${A.increase.map(x=>`<tr><td>${x.n}</td><td>${fmt(x.a)}</td><td>${fmt(x.add)}</td><td>${x.why}</td></tr>`).join('')}</tbody></table>
+  <h2>تصنيف البنود وحالتها</h2>
+  <table><thead><tr><th>البند</th><th>المبلغ</th><th>السنة السابقة</th><th>التصنيف</th><th>الحالة</th></tr></thead><tbody>
+  ${A.items.map(r=>`<tr><td>${esc(r.n)}</td><td>${fmt(r.a)}</td><td>${r.p!=null?fmt(r.p):'—'}</td><td>${CAT[r.cat].l}</td><td>${STAT[r.st].l}</td></tr>`).join('')}</tbody></table>
+  <h2>نقاط الخلل والنقص</h2>
+  <ul>${A.gaps.map(g=>`<li><b>${g.t}:</b> ${g.d}</li>`).join('')}</ul>`;
+}
+
+function doPrint(html){
+  const pa=$('#print-area'); pa.innerHTML=html;
+  if(inFrame&&!document.hasFocus) {}
+  try{ window.print(); }catch(e){}
+  if(inFrame) exportNote('إذا لم تظهر نافذة الحفظ، افتح نسخة الملف المحلية من المنصة.');
+}
+
+show('home');
+})();
+</script>
+</body>
+</html>
